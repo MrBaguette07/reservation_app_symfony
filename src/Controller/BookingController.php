@@ -11,6 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 
 class BookingController extends AbstractController
@@ -36,6 +37,7 @@ class BookingController extends AbstractController
     }
 
     #[Route('/booking/new', name: 'new_booking')]
+    #[IsGranted('ROLE_USER')]
     public function new(Request $request, EntityManagerInterface $entityManager, AvailabilityChecker $availabilityChecker): Response
     {
         $booking = new Booking();
@@ -51,8 +53,7 @@ class BookingController extends AbstractController
                 $entityManager->flush();
 
                 $this->addFlash('success', 'Votre réservation a été confirmée !');
-                return $this->redirectToRoute('confirm_booking', ['id' => $booking->getId()]);
-
+                return $this->redirectToRoute('booking_confirmation');
             }
         }
 

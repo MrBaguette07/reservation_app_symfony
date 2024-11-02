@@ -5,6 +5,10 @@ security:
     # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
     providers:
         users_in_memory: { memory: null }
+        app_user_provider:
+            entity:
+                class: App\Entity\User
+                property: email
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
@@ -12,6 +16,29 @@ security:
         main:
             lazy: true
             provider: users_in_memory
+            custom_authenticator: App\Security\LoginFormAuthenticator
+            logout:
+                path: app_logout
+                target: app_home
+                # where to redirect after logout
+                # target: app_any_route
+            
+            entry_point: App\Security\LoginFormAuthenticator
+            
+            form_login:
+                login_path: app_login
+                check_path: app_login
+                enable_csrf: true  # Active la protection CSRF
+                csrf_token_id: authenticate
+                # redirection après la déconnexion
+                always_use_default_target_path: true
+                default_target_path: app_home  # Redirige vers la page d'accueil après connexion
+
+            remember_me:
+                secret: '%kernel.secret%'
+                lifetime: 604800
+                path: /
+                always_remember_me: true
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
@@ -22,6 +49,8 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
+        - { path: ^/booking, roles: ROLE_USER }
+        - { path: ^/services, roles: ROLE_USER }
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
 
