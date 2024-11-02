@@ -12,10 +12,11 @@ class Booking
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
+    #[ORM\Column(type: 'integer')]
+    private $id;
 
-    #[Assert\NotBlank]
+
+    #[ORM\Column(type: 'datetime')]
     private $date;
 
     #[ORM\ManyToOne(inversedBy: 'bookings')]
@@ -53,10 +54,9 @@ class Booking
         return $this->date;
     }
 
-    public function setDate(\DateTimeInterface $date): static
+    public function setDate(\DateTimeInterface $date): self
     {
         $this->date = $date;
-
         return $this;
     }
 

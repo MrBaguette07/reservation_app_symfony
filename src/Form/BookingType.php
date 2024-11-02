@@ -3,10 +3,11 @@
 namespace App\Form;
 
 use App\Entity\Booking;
+use App\Entity\Service;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -19,13 +20,11 @@ class BookingType extends AbstractType
                 'label' => 'Date et heure',
                 'widget' => 'single_text',
             ])
-            ->add('service', ChoiceType::class, [
+            ->add('service', EntityType::class, [
+                'class' => Service::class,
+                'choice_label' => 'name',
                 'label' => 'Type de service',
-                'choices' => [
-                    'Coiffure' => 'coiffure',
-                    'Massage' => 'massage',
-                    'Spa' => 'spa',
-                ],
+                'placeholder' => 'Choisissez un service',
             ])
             ->add('submit', SubmitType::class, [
                 'label' => 'Réserver',

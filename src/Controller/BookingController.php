@@ -27,7 +27,7 @@ class BookingController extends AbstractController
             $entityManager->persist($booking);
             $entityManager->flush();
 
-            return $this->redirectToRoute('booking_confirmation');
+            return $this->redirectToRoute('confirm_booking', ['id' => $booking->getId()]);
         }
 
         return $this->render('booking/book.html.twig', [
@@ -51,7 +51,8 @@ class BookingController extends AbstractController
                 $entityManager->flush();
 
                 $this->addFlash('success', 'Votre réservation a été confirmée !');
-                return $this->redirectToRoute('booking_confirmation');
+                return $this->redirectToRoute('confirm_booking', ['id' => $booking->getId()]);
+
             }
         }
 
