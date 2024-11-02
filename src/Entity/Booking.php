@@ -26,11 +26,12 @@ class Booking
     #[ORM\ManyToOne(inversedBy: 'bookings')]
     private ?Service $service = null;
 
-    private $status;
+    #[ORM\Column(length: 255)]
+    private ?string $status = 'En attente';
 
     public function __construct()
     {
-        $this->status = 'pending';
+        $this->status = 'En attente';
     }
 
     public function getStatus(): ?string

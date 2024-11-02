@@ -25,9 +25,6 @@ class BookingType extends AbstractType
                 'choice_label' => 'name',
                 'label' => 'Type de service',
                 'placeholder' => 'Choisissez un service',
-            ])
-            ->add('submit', SubmitType::class, [
-                'label' => 'Réserver',
             ]);
     }
 

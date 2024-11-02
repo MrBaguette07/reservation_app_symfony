@@ -1,15 +1,22 @@
-<form method="post" action="{{ path('app_login') }}">
+<form method="post" action="{{ path('app_login') }}" class="p-4 border rounded shadow-sm bg-light">
     <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 
-    <div class="form-group">
-        <label for="email">Email</label>
-        <input type="email" id="email" name="_username" class="form-control" value="{{ last_username }}" required autofocus>
+    <h2 class="text-center mb-4">Connexion</h2>
+
+    <div class="form-group mb-3">
+        <label for="email" class="form-label">Email</label>
+        <input type="email" id="email" name="_username" class="form-control" value="{{ last_username }}" required autofocus placeholder="Entrez votre email">
     </div>
 
-    <div class="form-group">
-        <label for="password">Mot de passe</label>
-        <input type="password" id="password" name="_password" class="form-control" required>
+    <div class="form-group mb-4">
+        <label for="password" class="form-label">Mot de passe</label>
+        <input type="password" id="password" name="_password" class="form-control" required placeholder="Entrez votre mot de passe">
     </div>
 
-    <button type="submit" class="btn btn-primary">Se connecter</button>
+    <button type="submit" class="btn btn-primary btn-block">Se connecter</button>
+
+    <div class="text-center mt-3">
+        <small class="text-muted">Pas encore de compte ?</small>
+        <a href="{{ path('app_register') }}" class="btn btn-outline-secondary btn-block mt-2">S'enregistrer</a>
+    </div>
 </form>

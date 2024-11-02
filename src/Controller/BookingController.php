@@ -58,23 +58,6 @@ class BookingController extends AbstractController
         ]);
     }
 
-    #[Route('/booking/confirm/{id}', name: 'confirm_booking')]
-    public function confirmBooking(int $id, EntityManagerInterface $entityManager): Response
-    {
-        $booking = $entityManager->getRepository(Booking::class)->find($id);
-
-        if ($booking) {
-            $booking->setStatus('confirmed');
-            $entityManager->flush();
-            $this->addFlash('success', 'Réservation confirmée.');
-        } else {
-            $this->addFlash('error', 'Réservation introuvable.');
-        }
-
-        return $this->redirectToRoute('service_list');
-    }
-
-
     #[Route('/booking/cancel/{id}', name: 'cancel_booking', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
     public function cancelBooking(int $id, EntityManagerInterface $entityManager, Request $request): Response
@@ -108,6 +91,25 @@ class BookingController extends AbstractController
             'bookings' => $bookings,
         ]);
     }
+
+    #[Route('/admin/bookings/confirm/{id}', name: 'confirm_booking')]
+    #[IsGranted('ROLE_ADMIN')]
+    public function confirmBooking(int $id, EntityManagerInterface $entityManager): Response
+    {
+        $booking = $entityManager->getRepository(Booking::class)->find($id);
+
+        if (!$booking) {
+            $this->addFlash('error', 'Réservation introuvable.');
+            return $this->redirectToRoute('admin_bookings');
+        }
+
+        $booking->setStatus('confirmé');
+        $entityManager->flush();
+
+        $this->addFlash('success', 'La réservation a été confirmée avec succès.');
+        return $this->redirectToRoute('admin_bookings');
+    }
+
 
 
 

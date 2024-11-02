@@ -10,20 +10,60 @@
         {% endblock %}
     </head>
     <body>
-        {% for label, messages in app.flashes %}
-            <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
-                {% for message in messages %}
-                    {{ message }}
-                {% endfor %}
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="{{ path('user_bookings') }}">Réservation app</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('service_list') }}">Services</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('new_booking') }}">Réserver un créneau</a>
+                    </li>
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('admin_bookings') }}">Gérer les créneaux</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('add_service') }}">Ajouter un service</a>
+                        </li>
+                    {% endif %}
+                </ul>
+                <ul class="navbar-nav">
+                    {% if app.user %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('app_logout') }}">Déconnexion</a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('app_login') }}">Connexion</a>
+                        </li>
+                    {% endif %}
+                </ul>
             </div>
-        {% endfor %}
-        
-        {% block body %}
+        </nav>
+        <div class="container mt-4">
+            {% for label, messages in app.flashes %}
+                <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+                    {% for message in messages %}
+                        {{ message }}
+                    {% endfor %}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endfor %}
+            
+            {% block body %}
 
-        {% endblock %}
+            {% endblock %}
+            {% if is_granted('ROLE_ADMIN') %}
+                <a href="{{ path('admin_bookings') }}" class="btn btn-primary">Gérer les créneaux</a>
+            {% endif %}
+        </div>
 
         {% block javascripts %}
             <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
