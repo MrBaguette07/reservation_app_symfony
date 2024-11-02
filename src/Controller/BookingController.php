@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Entity\Booking;
 use App\Form\BookingType;
 use App\Service\AvailabilityChecker;
-use App\Entity\Service;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -36,18 +35,8 @@ class BookingController extends AbstractController
         ]);
     }
 
-    #[Route('/services', name: 'service_list')]
-    public function listServices(EntityManagerInterface $entityManager): Response
-    {
-        $services = $entityManager->getRepository(Service::class)->findAll();
-
-        return $this->render('booking/service_list.html.twig', [
-            'services' => $services,
-        ]);
-    }
-
     #[Route('/booking/new', name: 'new_booking')]
-    public function newBooking(Request $request, EntityManagerInterface $entityManager, AvailabilityChecker $availabilityChecker): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, AvailabilityChecker $availabilityChecker): Response
     {
         $booking = new Booking();
         $form = $this->createForm(BookingType::class, $booking);
@@ -66,7 +55,7 @@ class BookingController extends AbstractController
             }
         }
 
-        return $this->render('booking/new_booking.html.twig', [
+        return $this->render('booking/new.html.twig', [
             'form' => $form->createView(),
         ]);
     }
