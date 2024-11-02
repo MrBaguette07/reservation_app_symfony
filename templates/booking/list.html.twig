@@ -12,6 +12,7 @@
                 <th>Service</th>
                 <th>Date</th>
                 <th>Status</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -20,6 +21,12 @@
                     <td>{{ booking.service.name }}</td>
                     <td>{{ booking.date|date('d/m/Y H:i') }}</td>
                     <td>{{ booking.status }}</td>
+                    <td>
+                        <form method="post" action="{{ path('cancel_booking', { id: booking.id }) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir annuler cette réservation ?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('cancel' ~ booking.id) }}">
+                            <button type="submit" class="btn btn-danger btn-sm">Annuler</button>
+                        </form>
+                    </td>
                 </tr>
             {% endfor %}
         </tbody>

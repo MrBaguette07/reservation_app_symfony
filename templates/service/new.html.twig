@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ajouter un Service{% endblock %}
+
+{% block body %}
+<h1>Ajouter un Nouveau Service</h1>
+
+{{ form_start(form) }}
+    <div class="form-group">
+        {{ form_label(form.name) }}
+        {{ form_widget(form.name, {'attr': {'class': 'form-control'}}) }}
+    </div>
+    <div class="form-group">
+        {{ form_label(form.description) }}
+        {{ form_widget(form.description, {'attr': {'class': 'form-control'}}) }}
+    </div>
+    <div class="form-group">
+        {{ form_label(form.price) }}
+        {{ form_widget(form.price, {'attr': {'class': 'form-control'}}) }}
+    </div>
+    <button type="submit" class="btn btn-success mt-3">Ajouter le Service</button>
+{{ form_end(form) }}
+
+<a href="{{ path('service_list') }}" class="btn btn-secondary mt-3">Retour à la liste des services</a>
+{% endblock %}

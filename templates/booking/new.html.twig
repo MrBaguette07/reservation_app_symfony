@@ -1,13 +1,19 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Nouvelle Réservation{% endblock %}
+{% block title %}Réserver un Créneau{% endblock %}
 
 {% block body %}
 <h1>Réserver un créneau</h1>
 
 {{ form_start(form) }}
-    {{ form_row(form.service) }}
-    {{ form_row(form.date) }}
-    <button type="submit" class="btn btn-primary">Réserver</button>
+    <div class="form-group">
+        {{ form_label(form.service) }}
+        {{ form_widget(form.service, {'attr': {'class': 'form-control'}}) }}
+    </div>
+    <div class="form-group">
+        {{ form_label(form.date) }}
+        {{ form_widget(form.date, {'attr': {'class': 'form-control'}}) }}
+    </div>
+    <button type="submit" class="btn btn-primary mt-3">Réserver</button>
 {{ form_end(form) }}
 {% endblock %}

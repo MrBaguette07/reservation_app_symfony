@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des Créneaux{% endblock %}
+
+{% block body %}
+<h1>Gestion des Créneaux</h1>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Utilisateur</th>
+            <th>Service</th>
+            <th>Date</th>
+            <th>État</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for booking in bookings %}
+            <tr>
+                <td>{{ booking.user.email }}</td>
+                <td>{{ booking.service.name }}</td>
+                <td>{{ booking.date|date('d/m/Y H:i') }}</td>
+                <td>{{ booking.status }}</td>
+                <td>
+                    {% if booking.status == 'En attente' %}
+                        <a href="{{ path('confirm_booking', { id: booking.id }) }}" class="btn btn-success btn-sm">Confirmer</a>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

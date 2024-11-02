@@ -18,8 +18,8 @@ class AvailabilityChecker
     {
         $existingBooking = $this->entityManager->getRepository(Booking::class)
             ->findOneBy([
+                'service' => $booking->getService(),
                 'date' => $booking->getDate(),
-                'service' => $booking->getService()
             ]);
 
         return $existingBooking === null;
