@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Service;
 use App\Form\ServiceType;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -83,10 +84,15 @@ class ServiceController extends AbstractController
             throw $this->createNotFoundException('Service non trouvé');
         }
 
-        if ($this->isCsrfTokenValid('delete'.$service->getId(), $request->request->get('_token'))) {
-            $entityManager->remove($service);
-            $entityManager->flush();
-            $this->addFlash('success', 'Le service a été supprimé avec succès.');
+        if ($this->isCsrfTokenValid('delete' . $service->getId(), $request->request->get('_token'))) {
+            try {
+                $entityManager->remove($service);
+                $entityManager->flush();
+                $this->addFlash('success', 'Le service a été supprimé avec succès.');
+            } catch (ForeignKeyConstraintViolationException $e) {
+                // Message d'erreur si le service est lié à des réservations
+                $this->addFlash('error', 'Impossible de supprimer ce service car il est lié à une ou plusieurs réservations.');
+            }
         }
 
         return $this->redirectToRoute('service_list');
