@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\UserType;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -25,12 +26,17 @@ class RegistrationController extends AbstractController
             $hashedPassword = $passwordHasher->hashPassword($user, $user->getPassword());
             $user->setPassword($hashedPassword);
 
-            $entityManager->persist($user);
-            $entityManager->flush();
+            try {
+                
+                $entityManager->persist($user);
+                $entityManager->flush();
+                
+                $this->addFlash('success', 'Votre compte a été créé avec succès !');
 
-            $this->addFlash('success', 'Votre compte a été créé avec succès !');
-
-            return $this->redirectToRoute('app_login');
+                return $this->redirectToRoute('app_login');
+            } catch (UniqueConstraintViolationException $e) {
+                $this->addFlash('error', "L'adresse email est déjà utilisée. Veuillez en choisir une autre.");
+            }
         }
 
         return $this->render('registration/register.html.twig', [
