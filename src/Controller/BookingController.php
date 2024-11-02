@@ -16,29 +16,23 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class BookingController extends AbstractController
 {
-    #[Route('/booking', name: 'booking')]
-    public function book(Request $request, EntityManagerInterface $entityManager): Response
+    #[Route('/booking', name: 'user_bookings')]
+    #[IsGranted('ROLE_USER')]
+    public function listBookings(EntityManagerInterface $entityManager): Response
     {
-        $booking = new Booking();
-        $form = $this->createForm(BookingType::class, $booking);
+        $user = $this->getUser();
 
-        $form->handleRequest($request);
+        $bookings = $entityManager->getRepository(Booking::class)
+            ->findBy(['user' => $user]);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($booking);
-            $entityManager->flush();
-
-            return $this->redirectToRoute('confirm_booking', ['id' => $booking->getId()]);
-        }
-
-        return $this->render('booking/book.html.twig', [
-            'form' => $form->createView(),
+        return $this->render('booking/list.html.twig', [
+            'bookings' => $bookings,
         ]);
     }
 
     #[Route('/booking/new', name: 'new_booking')]
     #[IsGranted('ROLE_USER')]
-    public function new(Request $request, EntityManagerInterface $entityManager, AvailabilityChecker $availabilityChecker): Response
+    public function newBooking(Request $request, EntityManagerInterface $entityManager): Response
     {
         $booking = new Booking();
         $form = $this->createForm(BookingType::class, $booking);
@@ -46,15 +40,14 @@ class BookingController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            if (!$availabilityChecker->isAvailable($booking)) {
-                $this->addFlash('error', 'Le créneau choisi est déjà réservé. Veuillez choisir un autre horaire.');
-            } else {
-                $entityManager->persist($booking);
-                $entityManager->flush();
+            $booking->setUser($this->getUser());
 
-                $this->addFlash('success', 'Votre réservation a été confirmée !');
-                return $this->redirectToRoute('booking_confirmation');
-            }
+            $entityManager->persist($booking);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Votre réservation a été créée avec succès !');
+
+            return $this->redirectToRoute('user_bookings');
         }
 
         return $this->render('booking/new.html.twig', [
