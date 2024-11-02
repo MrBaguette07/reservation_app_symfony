@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Booking;
 use App\Form\BookingType;
+
+use App\Entity\Service;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -31,4 +33,77 @@ class BookingController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+
+    #[Route('/services', name: 'service_list')]
+    public function listServices(EntityManagerInterface $entityManager): Response
+    {
+        $services = $entityManager->getRepository(Service::class)->findAll();
+
+        return $this->render('booking/service_list.html.twig', [
+            'services' => $services,
+        ]);
+    }
+
+    #[Route('/booking/new', name: 'new_booking')]
+    public function newBooking(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $booking = new Booking();
+        $form = $this->createForm(BookingType::class, $booking);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $existingBooking = $entityManager->getRepository(Booking::class)
+                ->findOneBy(['date' => $booking->getDate(), 'service' => $booking->getService()]);
+
+            if ($existingBooking) {
+                $this->addFlash('error', 'Le créneau est déjà réservé.');
+            } else {
+                $entityManager->persist($booking);
+                $entityManager->flush();
+                $this->addFlash('success', 'Réservation confirmée !');
+
+                return $this->redirectToRoute('booking_confirmation');
+            }
+        }
+
+        return $this->render('booking/new_booking.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+
+    #[Route('/booking/confirm/{id}', name: 'confirm_booking')]
+    public function confirmBooking(int $id, EntityManagerInterface $entityManager): Response
+    {
+        $booking = $entityManager->getRepository(Booking::class)->find($id);
+
+        if ($booking) {
+            $booking->setStatus('confirmed');
+            $entityManager->flush();
+            $this->addFlash('success', 'Réservation confirmée.');
+        } else {
+            $this->addFlash('error', 'Réservation introuvable.');
+        }
+
+        return $this->redirectToRoute('service_list');
+    }
+
+
+    #[Route('/booking/cancel/{id}', name: 'cancel_booking')]
+    public function cancelBooking(int $id, EntityManagerInterface $entityManager): Response
+    {
+        $booking = $entityManager->getRepository(Booking::class)->find($id);
+
+        if ($booking) {
+            $entityManager->remove($booking);
+            $entityManager->flush();
+            $this->addFlash('success', 'Réservation annulée.');
+        } else {
+            $this->addFlash('error', 'Réservation introuvable.');
+        }
+
+        return $this->redirectToRoute('service_list');
+    }
+
+
 }

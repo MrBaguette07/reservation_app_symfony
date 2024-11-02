@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Réserver un Service{% endblock %}
+
+{% block body %}
+<h1>Réserver un Service</h1>
+
+<div class="container">
+    {{ form_start(form, { 'attr': { 'class': 'form-group' } }) }}
+        {{ form_row(form.date, { 'label': 'Date et heure', 'attr': { 'class': 'form-control' } }) }}
+        {{ form_row(form.service, { 'label': 'Type de service', 'attr': { 'class': 'form-control' } }) }}
+        {{ form_row(form.submit, { 'label': 'Réserver', 'attr': { 'class': 'btn btn-success mt-3' } }) }}
+    {{ form_end(form) }}
+</div>
+
+
+{% endblock %}

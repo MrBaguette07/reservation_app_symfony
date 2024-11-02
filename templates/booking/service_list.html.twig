@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Services{% endblock %}
+
+{% block body %}
+<h1>Nos Services</h1>
+
+<ul class="list-group">
+    {% for service in services %}
+        <li class="list-group-item">
+            <h2>{{ service.name }}</h2>
+            <p>{{ service.description }}</p>
+            <p>Prix : {{ service.price }} €</p>
+            <a href="{{ path('new_booking', { 'service_id': service.id }) }}" class="btn btn-primary">Réserver</a>
+        </li>
+    {% endfor %}
+</ul>
+{% endblock %}

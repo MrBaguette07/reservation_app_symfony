@@ -24,6 +24,25 @@ class Booking
     #[ORM\ManyToOne(inversedBy: 'bookings')]
     private ?Service $service = null;
 
+    private $status;
+
+    public function __construct()
+    {
+        $this->status = 'pending';
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(string $status): self
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
     public function getId(): ?int
     {
         return $this->id;
