@@ -11,24 +11,24 @@
     </head>
     <body>
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <a class="navbar-brand" href="{{ path('user_bookings') }}">Réservation app</a>
+            <a class="navbar-brand" href="{{ path('user_bookings') }}">Mon Application</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav mr-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ path('service_list') }}">Services</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ path('new_booking') }}">Réserver un créneau</a>
-                    </li>
+                    {% if is_granted('ROLE_USER') %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('user_bookings') }}">Mes Réservations</a>
+                        </li>
+                    {% endif %}
+
                     {% if is_granted('ROLE_ADMIN') %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ path('admin_bookings') }}">Gérer les créneaux</a>
+                            <a class="nav-link" href="{{ path('service_list') }}">Gérer les Services</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ path('add_service') }}">Ajouter un service</a>
+                            <a class="nav-link" href="{{ path('admin_bookings') }}">Gérer les Réservations</a>
                         </li>
                     {% endif %}
                 </ul>
@@ -60,9 +60,6 @@
             {% block body %}
 
             {% endblock %}
-            {% if is_granted('ROLE_ADMIN') %}
-                <a href="{{ path('admin_bookings') }}" class="btn btn-primary">Gérer les créneaux</a>
-            {% endif %}
         </div>
 
         {% block javascripts %}

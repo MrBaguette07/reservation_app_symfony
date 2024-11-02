@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier le Service{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Modifier le Service</h1>
+
+    {{ form_start(form, { 'attr': {'class': 'border rounded p-4 bg-light shadow-sm'} }) }}
+        {{ form_widget(form) }}
+        <button type="submit" class="btn btn-primary btn-block mt-3">Enregistrer les Modifications</button>
+    {{ form_end(form) }}
+</div>
+{% endblock %}
